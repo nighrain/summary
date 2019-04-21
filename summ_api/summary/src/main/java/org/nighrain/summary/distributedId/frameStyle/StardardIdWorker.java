@@ -4,6 +4,9 @@ package org.nighrain.summary.distributedId.frameStyle;
  * StardardIdWorker
  *
  * @author mayanjun(5/1/16)
+ * <p>
+ *     IDworker的实现类
+ * </p>
  */
 public class StardardIdWorker implements IdWorker {
 

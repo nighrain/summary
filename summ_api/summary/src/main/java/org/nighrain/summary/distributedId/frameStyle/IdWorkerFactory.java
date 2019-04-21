@@ -4,6 +4,7 @@ package org.nighrain.summary.distributedId.frameStyle;
  * IdWorkerBuilder
  *
  * @author mayanjun(5/1/16)
+ * <p>工厂</p>
  */
 public class IdWorkerFactory {
 

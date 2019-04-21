@@ -1,3 +1,4 @@
+[https://gitee.com/mayanjun/idworker]
 ## idworker
 idworker是一个ID生成工具，可以生成一个全局唯一的长整形ID。也支持分布式环境下的使用。idworker采用了Snowflake算法，并在此基础上增加了奇偶抖动功能，避免在低并发的环境下生成全是偶数的情况。
 

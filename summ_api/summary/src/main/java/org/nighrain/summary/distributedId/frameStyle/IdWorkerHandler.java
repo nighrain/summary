@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * IdWorkerHandler
  *
  * @author mayanjun(10/10/15)
+ * [https://gitee.com/mayanjun/idworker]
  */
 class IdWorkerHandler {
 
@@ -22,7 +23,7 @@ class IdWorkerHandler {
     public static final int WORKER_LENGTH = MAX_WORKER_INDEX + 1;
 
     private IdGenerator[] generators;
-    private AtomicInteger indexCounter = new AtomicInteger(0);
+    private AtomicInteger indexCounter = new AtomicInteger(0);//原子类
 
     /**
      * By default user all 16 indexes
@@ -38,6 +39,8 @@ class IdWorkerHandler {
     //@Required
     private void setWorkerIndexes(int... workerIndexes) {
         int indexes[];
+        //如果传来的数组是空的 就使用一个新的默认数组
+        //  否则 根据原数组生成一个新数组
         if(workerIndexes == null || workerIndexes.length == 0) indexes = newSequence();
         else indexes = newSequence(workerIndexes);
 
@@ -45,6 +48,7 @@ class IdWorkerHandler {
 
         generators = new IdGenerator[WORKER_LENGTH];
 
+        //创建 WORKER_LENGTH 个 IdGenerator 并 存到 map 和数组中
         for(int i = 0; i < WORKER_LENGTH; i++) {
             int index = indexes[i];
             IdGenerator generator = generatorMap.get(index);
@@ -57,11 +61,14 @@ class IdWorkerHandler {
         LOG.info("Id generator initialized");
     }
 
+    //根据原数组创建一个长度为WORKER_LENGTH 的新数组
     private int [] newSequence(int ... source) {
         int x[] = new int[WORKER_LENGTH];
         int len = source.length;
+        //把原数组 上的每一个值 循环赋值给新数组
         for(int i = 0, j =0; i < WORKER_LENGTH; i++, j++) {
             if(j >= len) j = 0;
+            //如果 原数组上的 某一位上的值 >=WORKER_LENGTH 的抛出异常
             if(source[j] >= WORKER_LENGTH) throw new IllegalArgumentException("Id worker index must less than " + WORKER_LENGTH + ", but got " + source[j]);
             x[i] = source[j];
         }
@@ -69,6 +76,7 @@ class IdWorkerHandler {
         return x;
     }
 
+    //生成一个新的数组 长度为WORKER_LENGTH 每位上的值等于其索引值
     private int [] newSequence() {
         int x[] = new int[WORKER_LENGTH];
         for(int i = 0; i < WORKER_LENGTH; i++) x[i] = i;
@@ -98,6 +106,7 @@ class IdWorkerHandler {
 
     /**
      * The core code to generate id
+     * 核心类
      */
     private static class IdGenerator {
         private final long workerId;
