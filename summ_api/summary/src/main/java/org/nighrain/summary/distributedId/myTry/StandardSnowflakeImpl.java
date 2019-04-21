@@ -3,14 +3,19 @@ package org.nighrain.summary.distributedId.myTry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *    
- * Title         [title]
+ * Title         [ 生成唯一id]
  * Author:       [..]
  * CreateDate:   [2019-04-21--17:56]  @_@ ~~
  * Version:      [v1.0]
- * Description:  [一句话描述该类的功能]
- * <p></p>
+ * Description:  [根据雪花算法改写的]
+ * <p>
+ *     去除了数据中心id
+ * </p>
  *  
  */
 public class StandardSnowflakeImpl implements IdWorker {
@@ -29,13 +34,6 @@ public class StandardSnowflakeImpl implements IdWorker {
             System.out.println(i+"\t\t"+idWorker.nextId());
         }
         System.out.println((System.currentTimeMillis()-start)+"ms");
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-
-            }
-        });
 
     }
 
@@ -54,7 +52,7 @@ public class StandardSnowflakeImpl implements IdWorker {
         if(machineId > maxMachineId || machineId < 0){
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0, but got %d",maxMachineId , machineId));
         }
-        System.out.printf(lineSp+"[StandardSnowflakeImpl] worker starting. timestamp left shift %d, machineId id bits %d, sequence bits %d, machineId %d",
+        System.out.printf(lineSp+"[StandardSnowflakeImpl] worker starting. timestamp left shift %d, machineId id bits %d, sequence bits %d, machineId %d"+lineSp,
                 timestampLeftShift, machineIdBits, sequenceBits, machineId);
         this.machineId = machineId;
     }
