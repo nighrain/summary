@@ -3,8 +3,7 @@ package org.nighrain.summary.distributedId.myTry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *    
@@ -28,12 +27,18 @@ public class StandardSnowflakeImpl implements IdWorker {
 
     public static void main(String[] args) {
         //1254840016441383
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         IdWorker idWorker = StandardSnowflakeImpl.create(0);
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(i+"\t\t"+idWorker.nextId());
+//        for (int i = 0; i < 1000; i++) {
+//            System.out.println(i+"\t\t"+idWorker.nextId());
+//        }
+//        System.out.println((System.currentTimeMillis()-start)+"ms");
+
+        Map<String, Object> result = idWorker.parseId(1254840016441383L);
+        for (Map.Entry<String, Object> entry : result.entrySet()) {
+            System.out.println(entry.getKey().toString()+":"+entry.getValue().toString());;
         }
-        System.out.println((System.currentTimeMillis()-start)+"ms");
+
 
     }
 
@@ -92,6 +97,23 @@ public class StandardSnowflakeImpl implements IdWorker {
     @Override
     public long nextId() {
         return getNextId();
+    }
+
+    @Override
+    public Map<String, Object> parseId(long id) {
+        return getParseId(id);
+    }
+
+    private synchronized Map<String, Object> getParseId(long id) {
+        HashMap<String, Object> result = new HashMap<>();
+        long createTime = (id >> timestampLeftShift) + timeStart;
+        int machineId = (int) ((id >> machineIdShift) & maxMachineId);
+        int sequence = (int) (id & sequenceMask);
+        result.put("createTimeLong", createTime);
+        result.put("createTime", new Date(createTime));
+        result.put("machineId", machineId);
+        result.put("sequence", sequence);
+        return result;
     }
 
     //同步方法 上锁

@@ -1,5 +1,7 @@
 package org.nighrain.summary.distributedId.myTry;
 
+import java.util.Map;
+
 /**
  *    
  * Title         [title]
@@ -12,4 +14,5 @@ package org.nighrain.summary.distributedId.myTry;
  */
 public interface IdWorker {
    long nextId();
+   Map<String,Object> parseId(long id);
 }
