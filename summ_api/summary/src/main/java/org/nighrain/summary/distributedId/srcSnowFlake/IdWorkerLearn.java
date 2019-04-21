@@ -12,7 +12,7 @@ import java.util.Date;
  * Version:      [v1.0]
  * Description:  [学习理解雪花算法]
  * <p>
- *     根据 : https://blog.csdn.net/cj2580/article/details/80980459
+ *     根据 : https://segmentfault.com/a/1190000011282426
  * </p>
  *  
  */

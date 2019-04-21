@@ -3,7 +3,7 @@ package org.nighrain.summary.distributedId.srcSnowFlake;
 /**
  *    
  * Title         [snowflake 分布式 id 生成]
- * Author:       [https://blog.csdn.net/cj2580/article/details/80980459]
+ * Author:       [https://segmentfault.com/a/1190000011282426]
  * CreateDate:   [2019-04-21--14:18]  @_@ ~~
  * Version:      [v1.0]
  * Description:  [学习雪花算法的Java版本]
@@ -47,13 +47,17 @@ public class IdWorker{
     private long datacenterId;
     private long sequence;
 
+    public IdWorker(long workerId, long datacenterId) {
+        this(workerId,datacenterId,0L);
+    }
+
     /**
      *
      * @param workerId   机器标识符
      * @param datacenterId  数据中心id
      * @param sequence   队列的初始值
      */
-    public IdWorker(long workerId, long datacenterId, long sequence){
+    private IdWorker(long workerId, long datacenterId, long sequence){
         // sanity check for workerId
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0",maxWorkerId));
