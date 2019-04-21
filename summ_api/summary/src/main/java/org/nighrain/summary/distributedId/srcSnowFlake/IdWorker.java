@@ -46,6 +46,12 @@ public class IdWorker{
     private long datacenterId;
     private long sequence;
 
+    /**
+     *
+     * @param workerId   机器标识符
+     * @param datacenterId  数据中心id
+     * @param sequence   队列的初始值
+     */
     public IdWorker(long workerId, long datacenterId, long sequence){
         // sanity check for workerId
         if (workerId > maxWorkerId || workerId < 0) {
@@ -71,12 +77,12 @@ public class IdWorker{
     private long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);    //datacenterId可以使用的最大数值：31
     private long sequenceBits = 12L;                                   //序列号占用的位数：12
 
-    private long workerIdShift = sequenceBits;                         // 12
-    private long datacenterIdShift = sequenceBits + workerIdBits;      // 12+5=17
-    private long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;    // 12+5+5=22
-    private long sequenceMask = -1L ^ (-1L << sequenceBits);           // -1L^(-1L << 12L) //4095
+    private long workerIdShift = sequenceBits;                         // 要左移 12
+    private long datacenterIdShift = sequenceBits + workerIdBits;      // 要左移 12+5=17
+    private long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;    // 要左移 12+5+5=22
+    private long sequenceMask = -1L ^ (-1L << sequenceBits);           // -1L^(-1L << 12L) //4095 同一毫秒内可使用的最大的队列数
 
-    private long lastTimestamp = -1L;
+    private long lastTimestamp = -1L;                                   //标识上一毫秒 用来判断当前毫秒是新的毫秒数还是旧的毫秒数
 
     public long getWorkerId(){
         return workerId;
@@ -90,24 +96,30 @@ public class IdWorker{
         return System.currentTimeMillis();
     }
 
+    //同步代码块 上锁
     public synchronized long nextId() {
         long timestamp = timeGen();
 
         if (timestamp < lastTimestamp) {
+            //时钟回滚了
             System.err.printf("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds",
                     lastTimestamp - timestamp));
         }
 
         if (lastTimestamp == timestamp) {
+            //在同一毫秒数内 则队列数 +1 用  (sequence + 1) & sequenceMask 来保证 队列位数不会溢出
             sequence = (sequence + 1) & sequenceMask;
             if (sequence == 0) {
+                //等于0 就是位数溢出了 则等待下一毫秒
                 timestamp = tilNextMillis(lastTimestamp);
             }
         } else {
+            //在当前毫秒数是新的毫秒 则对列从 0 开始
             sequence = 0;
         }
 
+        // 为下一次取id做毫秒数的判断 留下参考
         lastTimestamp = timestamp;
         return ((timestamp - twepoch) << timestampLeftShift) |
                 (datacenterId << datacenterIdShift) |
@@ -115,6 +127,7 @@ public class IdWorker{
                 sequence;
     }
 
+    //等待下一毫秒
     private long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
