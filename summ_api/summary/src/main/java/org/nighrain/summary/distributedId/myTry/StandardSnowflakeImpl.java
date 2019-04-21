@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  *    
  * Title         [ 生成唯一id]
- * Author:       [..]
+ * Author:       [nighrain]
  * CreateDate:   [2019-04-21--17:56]  @_@ ~~
  * Version:      [v1.0]
  * Description:  [根据雪花算法改写的]
