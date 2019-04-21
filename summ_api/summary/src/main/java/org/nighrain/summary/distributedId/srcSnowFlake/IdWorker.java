@@ -41,6 +41,7 @@ package org.nighrain.summary.distributedId.srcSnowFlake;
  */
 
 public class IdWorker{
+    private static final String lineSp = System.getProperty("line.separator", "\r\n");
 
     private long workerId;
     private long datacenterId;
@@ -60,7 +61,7 @@ public class IdWorker{
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
             throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0",maxDatacenterId));
         }
-        System.out.printf("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
+        System.out.printf(lineSp+"worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
                 timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits, workerId);
 
         this.workerId = workerId;
@@ -102,7 +103,7 @@ public class IdWorker{
 
         if (timestamp < lastTimestamp) {
             //时钟回滚了
-            System.err.printf("clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
+            System.err.printf(lineSp+"clock is moving backwards.  Rejecting requests until %d.", lastTimestamp);
             throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds",
                     lastTimestamp - timestamp));
         }
