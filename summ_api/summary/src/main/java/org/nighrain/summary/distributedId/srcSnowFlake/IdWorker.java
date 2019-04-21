@@ -149,10 +149,13 @@ public class IdWorker{
 
     //---------------测试---------------
     public static void main(String[] args) {
-        IdWorker worker = new IdWorker(1,1,1);
-        for (int i = 0; i < 30; i++) {
-            System.out.println(worker.nextId());
+        //40153453791678492
+        long start = System.currentTimeMillis();
+        IdWorker idWorker = new IdWorker(1,1,1);
+        for (int i = 0; i < 1000; i++) {
+            System.out.println(i+"\t\t"+idWorker.nextId());
         }
+        System.out.println((System.currentTimeMillis()-start)+"ms");
     }
 
 }
