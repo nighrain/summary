@@ -11,6 +11,8 @@ package org.nighrain.summary.base;
  *              eg: 3^2 = 0011^0010 = 0001
  * &    : "&"(与运算) 针对二进制,只要有一个为0,就为0;
  *              eg: 3&2 = 0011&0010 = 0010
+ * |    : "|"(管道符号) 针对二进制, 含义:x的第n位和y的第n位, 只要有一个是1, 则结果的第n位也为1, 否则为0;
+ *              eg: 3|2 = 0011|0010 = 0011
  * <<   :"<<"(向左位移) 针对二进制,转换成二进制后向左移动指定位数位,后面用0补齐;
  *              eg: 3<<5 是把int3转换成二进制数 0000 0000 0000 0011 然后向左移动5位 即 0000 0000 0110 0000
  *                  相当于 3乘2的五次方=96
@@ -27,6 +29,10 @@ package org.nighrain.summary.base;
  */
 public class BinaryOperation {
     public static void main(String[] args) {
+        t2();
+    }
+
+    public static void t1(){
         long a = -1L << 5L;// -32 2的5次方
         long b  = -1L ^ (-1L << 5L);//31 2的5次方-1
         System.out.printf("a=%d ,b=%d\r\n",a,b);
@@ -40,6 +46,24 @@ public class BinaryOperation {
         System.out.println(1073741824 >>> 1);
         System.out.println(3&2);
         System.out.println(15>>2);
+    }
+    public static void t2(){
+        int a = 3;      //0011
+        int b = 1;      //0001
+        System.out.println("a>>b = "+(3>>1));
+        System.out.println("a<<b = "+(3<<1));
+        System.out.println("a&b = "+(3&1));
+        System.out.println("a|b = "+(3|1));
+        System.out.println("a^b = "+(a^b));
+        /*
+        结果;
+            a>>b = 1
+            a<<b = 6
+            a&b = 1
+            a|b = 3
+            a^b = 2
+         */
+
     }
 
 }
